@@ -1,11 +1,15 @@
 var websocket;
 var websocketHeartbeatInterval;
-var doReconnect = true;
 var reconnectInterval;
+var streamStatus = false;
 
 function makeWebsocket() {
-	websocket = new WebSocket("wss://api.pancernik.info/notifier")
-	makeListeners()
+	try {
+		websocket = new WebSocket("wss://api.pancernik.info/notifier")
+		makeListeners()
+	} catch(err) {
+		console.log("Error when creating websocket " + err)
+	}
 }
 
 function closeWebsocket() {
@@ -15,8 +19,9 @@ function closeWebsocket() {
 function makeListeners() {
 	websocket.onopen = function () {
 		console.log("Connected!")
-		chrome.action.setBadgeBackgroundColor({ color: "#00FF00" })
-		chrome.action.setBadgeText({ text: "ON" })
+		//chrome.action.setBadgeBackgroundColor({ color: "#00FF00" })
+		chrome.action.setBadgeBackgroundColor({ color: "#666666" })
+		chrome.action.setBadgeText({ text: "+" })
 
 		startHeartbeat()
 		
@@ -31,15 +36,33 @@ function makeListeners() {
 			console.log("ping")
 		} else if (type == "status") {
 			updateBall(messageJson)
+			
+			if (messageJson.data["stream"]) {
+				if (messageJson.data.stream.status == true) {
+					if (!streamStatus) {
+						streamStatus = true
+						showNotification("Strumień trwa.")
+						playSound()
+					}
+				} else {
+					streamStatus = false
+				}
+			}
+
 			console.log(event.data)
 		} else if (type == "update") {
 			updateBall(messageJson)
+			
 			if (messageJson.data["topic"]) {
 				showNotification("Nowy temat: " + messageJson.data.topic.text)
 			}
 			if (messageJson.data["stream"]) {
 				if (messageJson.data.stream.status == true) {
+					streamStatus = true
 					showNotification("Strumień właśnie się zaczął!")
+					playSound()
+				} else {
+					streamStatus = false
 				}
 			}
 			
@@ -51,18 +74,16 @@ function makeListeners() {
 	
 	websocket.onclose = function () {
 		console.log("Disconnected!")
-		chrome.action.setBadgeBackgroundColor({ color: "#FF0000" })
-		chrome.action.setBadgeText({ text: "OFF" })
+		//chrome.action.setBadgeBackgroundColor({ color: "#FF0000" })
+		chrome.action.setBadgeText({ text: "-" })
 		
 		stopHeartbeat()
 		
-		if (doReconnect) {
-			clearInterval(reconnectInterval)
-			reconnectInterval = setInterval(function () {
-				console.log("Attempt to reconnect")
-				makeWebsocket()
-			}, 60000)
-		}
+		clearInterval(reconnectInterval)
+		reconnectInterval = setInterval(function () {
+			console.log("Attempt to reconnect")
+			makeWebsocket()
+		}, 60000)
 	}
 }
 
@@ -77,19 +98,6 @@ function startHeartbeat() {
 function stopHeartbeat() {
 	clearInterval(websocketHeartbeatInterval)
 }
-
-chrome.action.onClicked.addListener(function () {
-/*	if (websocket == null || websocket.readyState == WebSocket.CLOSED) {
-		makeWebsocket()
-		doReconnect = true;
-	} else if (websocket != null && websocket.readyState == WebSocket.OPEN) {
-		doReconnect = false;
-		closeWebsocket()
-	}*/
-	
-	showNotification("Strumień właśnie się zaczął!")
-	playSound()
-})
 
 function showNotification(mainMessage) {
 	chrome.notifications.create('status',
@@ -127,10 +135,26 @@ function playSound() {
   });
 }
 
-
-// start websocket
-makeWebsocket()
+chrome.action.onClicked.addListener(function () {
+/*	if (websocket == null || websocket.readyState == WebSocket.CLOSED) {
+		makeWebsocket()
+		doReconnect = true;
+	} else if (websocket != null && websocket.readyState == WebSocket.OPEN) {
+		doReconnect = false;
+		closeWebsocket()
+	}*/
+	
+	showNotification("Strumień właśnie się zaczął!")
+	playSound()
+})
 
 chrome.notifications.onClicked.addListener(function(notificationId) {
 	chrome.tabs.create({url: 'https://jadisco.pl'});
 });
+
+
+// start attempting to connect
+reconnectInterval = setInterval(function () {
+	console.log("Attempt to connect")
+	makeWebsocket()
+}, 30000)
