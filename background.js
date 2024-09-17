@@ -153,41 +153,10 @@ chrome.notifications.onClicked.addListener(function(notificationId) {
 });
 
 chrome.runtime.onStartup.addListener(function() {
-	showNotification("2")
-
 	console.log("runtime.onStartup")
 	reconnectInterval = setInterval(function () {
 		console.log("Attempt to connect")
 		makeWebsocket()
 	}, 20000)
 });
-/*
-chrome.tabs.onActivated.addListener(function() {
-	showNotification("3")
 
-	console.log("tabs.onActivated")
-	reconnectInterval = setInterval(function () {
-		console.log("Attempt to connect")
-		makeWebsocket()
-	}, 20000)
-});
-
-chrome.windows.onCreated.addListener(function() {
-	showNotification("2")
-
-	console.log("windows.onCreated")
-	reconnectInterval = setInterval(function () {
-		console.log("Attempt to connect")
-		makeWebsocket()
-	}, 20000)
-});
-
-
-
-// start attempting to connect
-showNotification("1")
-reconnectInterval = setInterval(function () {
-	console.log("Attempt to connect")
-	makeWebsocket()
-}, 20000)
-*/
