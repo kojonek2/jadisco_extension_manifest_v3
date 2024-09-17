@@ -83,7 +83,7 @@ function makeListeners() {
 		reconnectInterval = setInterval(function () {
 			console.log("Attempt to reconnect")
 			makeWebsocket()
-		}, 60000)
+		}, 20000)
 	}
 }
 
@@ -144,7 +144,7 @@ chrome.action.onClicked.addListener(function () {
 		closeWebsocket()
 	}*/
 	
-	showNotification("Strumień właśnie się zaczął!")
+	showNotification("Testowe powiadomienie!")
 	playSound()
 })
 
@@ -152,9 +152,42 @@ chrome.notifications.onClicked.addListener(function(notificationId) {
 	chrome.tabs.create({url: 'https://jadisco.pl'});
 });
 
+chrome.runtime.onStartup.addListener(function() {
+	showNotification("2")
+
+	console.log("runtime.onStartup")
+	reconnectInterval = setInterval(function () {
+		console.log("Attempt to connect")
+		makeWebsocket()
+	}, 20000)
+});
+/*
+chrome.tabs.onActivated.addListener(function() {
+	showNotification("3")
+
+	console.log("tabs.onActivated")
+	reconnectInterval = setInterval(function () {
+		console.log("Attempt to connect")
+		makeWebsocket()
+	}, 20000)
+});
+
+chrome.windows.onCreated.addListener(function() {
+	showNotification("2")
+
+	console.log("windows.onCreated")
+	reconnectInterval = setInterval(function () {
+		console.log("Attempt to connect")
+		makeWebsocket()
+	}, 20000)
+});
+
+
 
 // start attempting to connect
+showNotification("1")
 reconnectInterval = setInterval(function () {
 	console.log("Attempt to connect")
 	makeWebsocket()
-}, 30000)
+}, 20000)
+*/
