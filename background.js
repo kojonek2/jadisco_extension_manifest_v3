@@ -1,11 +1,12 @@
 var websocket;
 var websocketHeartbeatInterval;
-var reconnectInterval;
+var connectInterval;
 var streamStatus = false;
+var topic = "";
 
 function makeWebsocket() {
 	try {
-		websocket = new WebSocket("wss://api.pancernik.info/notifier")
+		websocket = new WebSocket("wss://livegamers.pl/api/pubsub")
 		makeListeners()
 	} catch(err) {
 		console.log("Error when creating websocket " + err)
@@ -23,9 +24,11 @@ function makeListeners() {
 		chrome.action.setBadgeBackgroundColor({ color: "#666666" })
 		chrome.action.setBadgeText({ text: "+" })
 
+		websocket.send("{\"type\":\"follow\",\"site_id\":16}")
+		
 		startHeartbeat()
 		
-		clearInterval(reconnectInterval)
+		clearInterval(connectInterval)
 	}
 	
 	websocket.onmessage = function (event) {
@@ -35,38 +38,33 @@ function makeListeners() {
 		if (type == "ping") {
 			console.log("ping")
 		} else if (type == "status") {
-			updateBall(messageJson)
+			let statusReceived = messageJson.data.services[2].status.status
+			updateBall(statusReceived)
+			//console.log(messageJson.data.services[2])
+			//console.log(messageJson.data.services[2].status.status)
 			
-			if (messageJson.data["stream"]) {
-				if (messageJson.data.stream.status == true) {
-					if (!streamStatus) {
-						streamStatus = true
-						showNotification("Strumień trwa.")
-						playSound()
-					}
-				} else {
-					streamStatus = false
+			if (statusReceived == 1) {
+				if (!streamStatus) {
+					streamStatus = true
+					showNotification(topic == "" ? "Strumień trwa." : "Strumień właśnie się zaczął!")
+					playSound()
+				}
+			} else {
+				streamStatus = false
+			}
+			
+			let topicReceived = messageJson.data.topic.text
+			if (topic == "") {
+				// first topic received
+				topic = topicReceived
+			} else {
+				if (topic != topicReceived) {
+					showNotification("Nowy temat: " + topicReceived)
+					topic = topicReceived
 				}
 			}
 
-			console.log(event.data)
-		} else if (type == "update") {
-			updateBall(messageJson)
-			
-			if (messageJson.data["topic"]) {
-				showNotification("Nowy temat: " + messageJson.data.topic.text)
-			}
-			if (messageJson.data["stream"]) {
-				if (messageJson.data.stream.status == true) {
-					streamStatus = true
-					showNotification("Strumień właśnie się zaczął!")
-					playSound()
-				} else {
-					streamStatus = false
-				}
-			}
-			
-			console.log(event.data)
+			//console.log(event.data)
 		} else {
 			console.log(event.data)
 		}
@@ -79,11 +77,7 @@ function makeListeners() {
 		
 		stopHeartbeat()
 		
-		clearInterval(reconnectInterval)
-		reconnectInterval = setInterval(function () {
-			console.log("Attempt to reconnect")
-			makeWebsocket()
-		}, 20000)
+		startConnect()
 	}
 }
 
@@ -97,6 +91,14 @@ function startHeartbeat() {
 
 function stopHeartbeat() {
 	clearInterval(websocketHeartbeatInterval)
+}
+
+function startConnect() {
+	clearInterval(connectInterval)
+	connectInterval = setInterval(function () {
+		console.log("Attempt to connect")
+		makeWebsocket()
+	}, 20000)
 }
 
 function showNotification(mainMessage) {
@@ -117,22 +119,24 @@ function showNotification(mainMessage) {
 	});
 }
 
-function updateBall(messageJson) {
-	if (messageJson.data["stream"]) {
-		if (messageJson.data.stream.status == true) {
-			chrome.action.setIcon({path: {'16': '/icons/16-online.png', '32': '/icons/32-online.png'}});
-		} else {
-			chrome.action.setIcon({path: {'16': '/icons/16.png', '32': '/icons/32.png'}});
-		}
+function updateBall(statusReceived) {
+	if (statusReceived == 1) {
+		chrome.action.setIcon({path: {'16': '/icons/16-online.png', '32': '/icons/32-online.png'}});
+	} else {
+		chrome.action.setIcon({path: {'16': '/icons/16.png', '32': '/icons/32.png'}});
 	}
 }
 
 function playSound() {
-  chrome.offscreen.createDocument({
-    url: chrome.runtime.getURL('audio.html'),
-    reasons: ['AUDIO_PLAYBACK'],
-    justification: 'notification',
-  });
+	chrome.offscreen.createDocument({
+		url: chrome.runtime.getURL('audio.html'),
+		reasons: ['AUDIO_PLAYBACK'],
+		justification: 'notification',
+	});
+	
+	setTimeout(function() {
+		chrome.offscreen.closeDocument()
+	}, 5000);
 }
 
 chrome.action.onClicked.addListener(function () {
@@ -144,7 +148,7 @@ chrome.action.onClicked.addListener(function () {
 		closeWebsocket()
 	}*/
 	
-	showNotification("Testowe powiadomienie!")
+	showNotification("Strumień " + (streamStatus ? "włączony" : "wyłączony") + "\n" + "Temat: " + topic)
 	playSound()
 })
 
@@ -154,9 +158,8 @@ chrome.notifications.onClicked.addListener(function(notificationId) {
 
 chrome.runtime.onStartup.addListener(function() {
 	console.log("runtime.onStartup")
-	reconnectInterval = setInterval(function () {
-		console.log("Attempt to connect")
-		makeWebsocket()
-	}, 20000)
+	startConnect()
 });
 
+
+startConnect()
