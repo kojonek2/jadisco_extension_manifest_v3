@@ -9,7 +9,10 @@
     <link rel="stylesheet" type="text/css" href="background.css">
 </head>
 <body>
-<img id="logo" class="logo" src="logo.png" alt="JaDisco.pl">
+<header class="header">
+    <img id="logo" src="logo.png" alt="jaDisco.pl">
+    <span id="settingsButton" class="settings">📎</span>
+</header>
 <div class="myGrad"></div>
 <div class="info-wrapper">
     <div class="status-wrapper section">
@@ -28,16 +31,15 @@
     </div>
 
 </div>
-
-<div class="volume-wrapper">
-    <input type="checkbox" id="muted" />
-    <label for="muted">Mute</label><br>
-    <label for="volume">Volume</label>
-    <input type="range" id="volume" min="0" max="1" value="0.5" step="0.1" />
+<div id="settings" class="settings-wrapper" hidden>
+    <div class="volume-wrapper">
+        <input type="checkbox" id="muted" />
+        <label for="muted">Mute</label><br>
+        <label for="volume">Volume</label>
+        <input type="range" id="volume" min="0" max="1" value="0.5" step="0.1" />
+    </div>
+    <button id="save" class="save-button">💾 Save</button>
 </div>
-
-<button id="save" class="save-button">💾 Save</button>
-
 <script src="popup.js"></script>
 </body>
 </html>

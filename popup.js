@@ -181,11 +181,22 @@ function playSound() {
     );
 }
 
+const toggleOptions = () => {
+    console.log('Toggle options');
+    const settingsEl = document.getElementById('settings');
+    if (settingsEl.hasAttribute('hidden')) {
+        settingsEl.removeAttribute('hidden');
+    } else {
+        settingsEl.setAttribute('hidden', null);
+    }
+};
+
 
 window.onblur = function() {
     closeWebsocket();
 };
 
 document.addEventListener('DOMContentLoaded', restoreOptions);
-saveEl.addEventListener('click', saveOptions);
 document.getElementById('logo').addEventListener('click', openJadisco);
+document.getElementById('settingsButton').addEventListener('click', toggleOptions);
+saveEl.addEventListener('click', saveOptions);
