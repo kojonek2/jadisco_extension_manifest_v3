@@ -52,16 +52,16 @@ function assingDateToElement(dateOnly, element, fullDate) {
 
 function assignDataFromMsg(lastMsg) {
     const strimActive = lastMsg.data.services.some(service => service.status.status === 1);
-    const soundAlreadyPlayed = statusEl.className === 'glow-green';
+    const soundAlreadyPlayed = statusEl.className === 'glow glow-green';
     if (strimActive) {
         statusEl.innerHTML = 'On air';
-        statusEl.classList = ['glow-green'];
+        statusEl.className = 'glow glow-green';
         if (!soundAlreadyPlayed) {
             playSound();
         }
     } else {
         statusEl.innerHTML = 'Offline';
-        statusEl.classList = ['glow-red'];
+        statusEl.className = 'glow glow-red';
         const statusDate = new Date(lastMsg.data.host.created_at);
         const statusDateOnly = new Date(statusDate.getFullYear(), statusDate.getMonth(), statusDate.getDate());
         assingDateToElement(statusDateOnly, statusTimeEl, statusDate);
@@ -85,7 +85,6 @@ const restoreOptions = () => {
     chrome.storage.sync.get(
         { muted: false, volume: 0.5, lastMsg: {} },
         (items) => {
-            console.log('items', items);
             mutedEl.checked = items.muted;
             volumeEl.value = items.volume;
             const { lastMsg } = items;
