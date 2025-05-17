@@ -186,8 +186,10 @@ const toggleOptions = () => {
     const settingsEl = document.getElementById('settings');
     if (settingsEl.hasAttribute('hidden')) {
         settingsEl.removeAttribute('hidden');
+        document.getElementById('settingsButton').innerText = '💀';
     } else {
         settingsEl.setAttribute('hidden', null);
+        document.getElementById('settingsButton').innerText = '📎';
     }
 };
 
