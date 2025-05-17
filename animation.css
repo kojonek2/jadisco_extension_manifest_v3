@@ -1,0 +1,49 @@
+.myGrad {
+    width: 100%;
+    height: 50px;
+    margin: 10px 0;
+    border-top: solid 2px #FFF;
+    border-bottom: solid 2px #FFF;
+    overflow: hidden;
+}
+
+.myGrad:after {
+    position: relative;
+    content: "";
+    display: block;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2000px;
+    background: linear-gradient(0% -15%, #655bef 0%, #fa28bf 20%, #ff4665 40%, #fbde4e 60%, #00fbea 80%, #555def 100%);
+    background: -moz-linear-gradient(0% -15%, #655bef 0%, #fa28bf 20%, #ff4665 40%, #fbde4e 60%, #00fbea 80%, #555def 100%);
+    background: -webkit-gradient(linear, 0% -15%, 100% 100%, color-stop(0, #655bef), color-stop(0.2, #fa28bf), color-stop(0.4, #ff4665), color-stop(0.6, #fbde4e), color-stop(0.8, #00fbea), color-stop(1, #555def));
+    -o-animation: anime 10s infinite;
+    -ms-animation: anime 10s infinite;
+    -moz-animation: anime 10s infinite;
+    -webkit-animation: anime 10s infinite;
+}
+
+@-webkit-keyframes anime {
+    0% {
+        top: 0;
+    }
+    50% {
+        top: -1800px;
+    }
+    100% {
+        top: 0;
+    }
+}
+
+@keyframes anime {
+    0% {
+        top: 0;
+    }
+    50% {
+        top: -1800px;
+    }
+    100% {
+        top: 0;
+    }
+}
