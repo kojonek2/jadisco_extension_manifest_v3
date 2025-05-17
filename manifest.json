@@ -1,6 +1,7 @@
 {
    "background": {
-      "service_worker": "background.js"
+      "service_worker": "background.js",
+      "type": "module"
    },
    "action": {
 	  "default_popup": "popup.html",
@@ -18,5 +19,8 @@
    "minimum_chrome_version": "116",
    "name": "Jadisco.pl",
    "permissions": [ "notifications", "offscreen", "storage" ],
-   "version": "2.1.0"
+   "version": "2.1.0",
+   "content_security_policy": {
+      "extension_pages": "script-src 'self'; object-src 'self';"
+   }
 }
