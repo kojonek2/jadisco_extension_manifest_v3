@@ -17,7 +17,6 @@
    "manifest_version": 3,
    "minimum_chrome_version": "116",
    "name": "Jadisco.pl",
-   "permissions": [ "notifications", "offscreen", "storage" ],
-   "optional_permissions": ["background"],
+   "permissions": [ "notifications", "offscreen", "storage", "background" ],
    "version": "2.2.0"
 }
