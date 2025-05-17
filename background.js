@@ -118,16 +118,24 @@ function startConnect() {
 }
 
 function showNotification(mainMessage) {
-	chrome.notifications.create('status',
-	{
-		type: 'basic',
-		iconUrl: '/icons/128.png',
-		title: 'Jadisco.pl',
-		requireInteraction: false,
-		priority: 2,
-		silent: true,
-		message: mainMessage
-	});
+	chrome.storage.sync.get({removeNotification: true }, (options) => {
+		chrome.notifications.create('status', {
+			type: 'basic',
+			iconUrl: '/icons/128.png',
+			title: 'Jadisco.pl',
+			requireInteraction: options.removeNotification,
+			priority: 2,
+			silent: true,
+			message: mainMessage
+		}, function (callback_id) {
+			if (options.removeNotification)
+			{
+				setTimeout(function() {
+					chrome.notifications.clear(callback_id)
+				}, 15000);
+			}
+		});
+	})
 }
 
 function updateBall(statusReceived) {

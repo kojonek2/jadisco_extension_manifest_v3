@@ -1,9 +1,10 @@
 const saveOptions = () => {
   const muted = document.getElementById('muted').checked;
   const volume = document.getElementById('volume').value;
+  const removeNotification = document.getElementById('removeNotification').checked;
 
   chrome.storage.sync.set(
-    { muted: muted, volume: volume },
+    { muted: muted, volume: volume, removeNotification: removeNotification },
     () => {
       // Update status to let user know options were saved.
       const status = document.getElementById('status');
@@ -17,10 +18,11 @@ const saveOptions = () => {
 
 const restoreOptions = () => {
   chrome.storage.sync.get(
-    { muted: false, volume: 0.5 },
+    { muted: false, volume: 0.5, removeNotification: true },
     (items) => {
       document.getElementById('muted').checked = items.muted;
       document.getElementById('volume').value = items.volume;
+      document.getElementById('removeNotification').checked = items.removeNotification;
     }
   );
 };
