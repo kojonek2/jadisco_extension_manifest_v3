@@ -16,6 +16,6 @@ export function playSound() {
                     chrome.offscreen.closeDocument();
                 }, 1000);
             }
-        }
+        },
     );
 }

@@ -52,7 +52,7 @@ function assingDateToElement(dateOnly, element, fullDate) {
 
 function assignDataFromMsg(lastMsg) {
     const strimActive = lastMsg.data.services.some(service => service.status.status === 1);
-    const soundAlreadyPlayed =  statusEl.className === 'glow-green';
+    const soundAlreadyPlayed = statusEl.className === 'glow-green';
     if (strimActive) {
         statusEl.innerHTML = 'On air';
         statusEl.classList = ['glow-green'];
