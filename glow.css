@@ -1,34 +1,48 @@
+:root {
+    --green-color: greenyellow;
+    --green-shadow: darkseagreen;
+    --red-color: red;
+    --red-shadow: orangered;
+    --red-core: darkred;
+}
+
+.glow {
+    padding-left: 15px;
+    text-align: center;
+    animation: glow 1s ease-in-out infinite alternate;
+}
+
 .glow-green {
-    padding-left: 8px;
-    color: greenyellow;
-    text-align: center;
-    -webkit-animation: glow-green 1s ease-in-out infinite alternate;
-    -moz-animation: glow-green 1s ease-in-out infinite alternate;
-    animation: glow-green 1s ease-in-out infinite alternate;
+    color: var(--green-color);
+    --glow-color-primary: var(--green-shadow);
+    --glow-color-secondary: var(--green-color);
 }
 
-@-webkit-keyframes glow-green {
-    from {
-        text-shadow: 0 0 10px darkseagreen, 0 0 20px darkseagreen, 0 0 30px greenyellow, 0 0 40px greenyellow, 0 0 50px greenyellow, 0 0 60px greenyellow, 0 0 70px greenyellow;
-    }
-    to {
-        text-shadow: 0 0 20px darkseagreen, 0 0 30px greenyellow, 0 0 40px greenyellow, 0 0 50px greenyellow, 0 0 60px greenyellow, 0 0 70px greenyellow, 0 0 80px greenyellow;
-    }
-}
 .glow-red {
-    padding-left: 8px;
-    color: red;
-    text-align: center;
-    -webkit-animation: glow-red 1s ease-in-out infinite alternate;
-    -moz-animation: glow-red 1s ease-in-out infinite alternate;
-    animation: glow-red 1s ease-in-out infinite alternate;
+    color: var(--red-color);
+    --glow-color-primary: var(--red-shadow);
+    --glow-color-secondary: var(--red-core);
 }
 
-@-webkit-keyframes glow-red {
+@keyframes glow {
     from {
-        text-shadow: 0 0 10px orangered, 0 0 20px orangered, 0 0 30px darkred, 0 0 40px darkred, 0 0 50px darkred, 0 0 60px darkred, 0 0 70px darkred;
+        text-shadow:
+                0 0 5px var(--glow-color-primary),
+                0 0 15px var(--glow-color-primary),
+                0 0 25px var(--glow-color-secondary),
+                0 0 35px var(--glow-color-secondary),
+                0 0 45px var(--glow-color-secondary),
+                0 0 55px var(--glow-color-secondary),
+                0 0 65px var(--glow-color-secondary);
     }
     to {
-        text-shadow: 0 0 20px orangered, 0 0 30px darkred, 0 0 40px darkred, 0 0 50px darkred, 0 0 60px darkred, 0 0 70px darkred, 0 0 80px darkred;
+        text-shadow:
+                0 0 20px var(--glow-color-primary),
+                0 0 30px var(--glow-color-secondary),
+                0 0 40px var(--glow-color-secondary),
+                0 0 50px var(--glow-color-secondary),
+                0 0 60px var(--glow-color-secondary),
+                0 0 70px var(--glow-color-secondary),
+                0 0 80px var(--glow-color-secondary);
     }
 }
