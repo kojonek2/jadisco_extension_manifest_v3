@@ -1,0 +1,86 @@
+@import url(https://fonts.googleapis.com/css?family=Syne+Mono&display=swap);
+
+body {
+    width: 275px;
+    margin: 0 auto;
+    font-family: "Syne Mono", monospace;
+    color: #FFF;
+    font-size: 16px;
+    padding: 20px 0;
+    text-align: center;
+}
+
+img {
+    cursor: pointer;
+    width: 180px;
+    height: auto
+}
+
+button {
+    font-family: "Syne Mono", monospace;
+    font-size: 14px;
+    height: 35px;
+    width: 100%;
+    cursor: crosshair;
+    line-height: 1;
+    vertical-align: middle;
+}
+
+.section {
+    background: rgba(255,255,255,0.1);
+    padding: 5px;
+    border-radius: 5px;
+}
+
+.info-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 16px;
+    align-items: flex-start;
+    margin-left: 6px;
+    margin-right: 15px;
+}
+
+.status-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.topic {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    width: 100%;
+}
+
+.topic-title {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.topic-details {
+    font-size: 12px;
+    text-align: left;
+    padding: 4px;
+}
+
+.volume-wrapper {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.logo {
+    z-index: 10;
+}
+
+.go-to-button {
+    cursor: pointer;
+}
+
+.save-button {
+    margin-bottom: 10px;
+}

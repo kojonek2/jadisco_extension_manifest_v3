@@ -1,24 +1,43 @@
 <!DOCTYPE html>
 <html>
-  <head>
+<head>
     <title>JaDisco</title>
-  </head>
-  <body style="width:140px">
-    <div>
-	  <button id="openJadisco">Idz do JaDisco.pl</button>
-	</div>
-	
-	<br/>
-	<div>
-      <input type="checkbox" id="muted"/>
-	  <label for="muted">Wyciszenie</label><br>
-	  <label for="volume">Glosnosc</label>
-      <input type="range" id="volume" min="0" max="1" value="0.5" step="0.1"/>
-	</div>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="popup.css">
+    <link rel="stylesheet" type="text/css" href="animation.css">
+    <link rel="stylesheet" type="text/css" href="glow.css">
+    <link rel="stylesheet" type="text/css" href="background.css">
+</head>
+<body>
+<img id="logo" class="logo" src="logo.png" alt="JaDisco.pl">
+<div class="myGrad"></div>
+<div class="info-wrapper">
+    <div class="status-wrapper section">
+        <div>
+            <span>Status:</span>
+            <span id="status"></span>
+        </div>
+        <span id="statusTime"></span>
+    </div>
+    <div class="topic section">
+        <div class="topic-title">
+            <span>Topic:</span>
+            <span id="topicTime"></span>
+        </div>
+        <p id="topic" class="topic-details"></p>
+    </div>
 
-    <div id="status"></div>
-    <button id="save">Save</button>
+</div>
 
-    <script src="popup.js"></script>
-  </body>
+<div class="volume-wrapper">
+    <input type="checkbox" id="muted" />
+    <label for="muted">Wyciszenie</label><br>
+    <label for="volume">Glosnosc</label>
+    <input type="range" id="volume" min="0" max="1" value="0.5" step="0.1" />
+</div>
+
+<button id="save" class="save-button">💾 Save</button>
+
+<script src="popup.js"></script>
+</body>
 </html>

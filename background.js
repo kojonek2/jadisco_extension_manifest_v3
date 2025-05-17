@@ -1,8 +1,8 @@
-var websocket;
-var websocketHeartbeatInterval;
-var connectInterval;
-var streamStatus = false;
-var topic = "";
+let websocket;
+let websocketHeartbeatInterval;
+let connectInterval;
+let streamStatus = false;
+let topic = "";
 
 function makeWebsocket() {
 	try {
@@ -20,9 +20,6 @@ function closeWebsocket() {
 function makeListeners() {
 	websocket.onopen = function () {
 		console.log("Connected!")
-		//chrome.action.setBadgeBackgroundColor({ color: "#00FF00" })
-		//chrome.action.setBadgeBackgroundColor({ color: "#666666" })
-		//chrome.action.setBadgeText({ text: "+" })
 		updateBall(streamStatus)
 
 		websocket.send("{\"type\":\"follow\",\"site_id\":16}")
@@ -36,25 +33,21 @@ function makeListeners() {
 		let messageJson = JSON.parse(event.data)
 		let type = messageJson.type
 		
-		if (type == "ping") {
-			console.log("ping")
-		} else if (type == "status") {
+		if (type === "ping") {
+			console.log("🏓")
+		} else if (type === "status") {
 			let statusReceived = 0
-			for (let i = 0; i < messageJson.data.services.length; i += 1) {
-				//console.log(messageJson.data.services[i])
-				if (messageJson.data.services[i].status.status == 1)
+			for (const element of messageJson.data.services) {
+				if (element.status.status === 1)
 					statusReceived = 1
 			}
 			
-			//let statusReceived = messageJson.data.services[2].status.status
 			updateBall(statusReceived)
-			//console.log(messageJson.data.services[2])
-			//console.log(messageJson.data.services[2].status.status)
-			
-			if (statusReceived == 1) {
+
+			if (statusReceived === 1) {
 				if (!streamStatus) {
 					streamStatus = true
-					showNotification(topic == "" ? "Strumień trwa." : "Strumień właśnie się zaczął!")
+					showNotification(topic === "" ? "Strumień trwa." : "Strumień właśnie się zaczął!")
 					playSound()
 				}
 			} else {
@@ -63,11 +56,10 @@ function makeListeners() {
 			
 			try {
 			let topicReceived = messageJson.data.topic.text
-				if (topic == "") {
-					// first topic received
+				if (topic === "") {
 					topic = topicReceived
 				} else {
-					if (topic != topicReceived) {
+					if (topic !== topicReceived) {
 						showNotification("Nowy temat: " + topicReceived)
 						topic = topicReceived
 					}
@@ -77,16 +69,11 @@ function makeListeners() {
 				console.log(messageJson)
 			}
 
-			console.log(event.data)
-		} else {
-			console.log(event.data)
 		}
 	}
 	
 	websocket.onclose = function () {
 		console.log("Disconnected!")
-		//chrome.action.setBadgeBackgroundColor({ color: "#FF0000" })
-		//chrome.action.setBadgeText({ text: "-" })
 		chrome.action.setIcon({path: {'16': '/icons/16-disconnected.png', '32': '/icons/32-disconnected.png'}})
 		
 		stopHeartbeat()
@@ -98,8 +85,7 @@ function makeListeners() {
 function startHeartbeat() {
 	stopHeartbeat()
 	websocketHeartbeatInterval = setInterval(function () {
-		//console.log("pong")
-		if (websocket.readyState == websocket.OPEN) {
+		if (websocket.readyState === websocket.OPEN) {
 			websocket.send("{\"type\": \"pong\"}")
 		}
 	}, 20000)
@@ -136,7 +122,7 @@ function showNotification(mainMessage) {
 }
 
 function updateBall(statusReceived) {
-	if (statusReceived == 1) {
+	if (statusReceived === 1) {
 		chrome.action.setIcon({path: {'16': '/icons/16-online.png', '32': '/icons/32-online.png'}})
 	} else {
 		chrome.action.setIcon({path: {'16': '/icons/16.png', '32': '/icons/32.png'}})
@@ -163,38 +149,13 @@ function playSound() {
 	);
 }
 
-/*
-chrome.action.onClicked.addListener(function () {
-/*	if (websocket == null || websocket.readyState == WebSocket.CLOSED) {
-		makeWebsocket()
-		doReconnect = true;
-	} else if (websocket != null && websocket.readyState == WebSocket.OPEN) {
-		doReconnect = false;
-		closeWebsocket()
-	}/
-	
-	showNotification("Strumień " + (streamStatus ? "włączony" : "wyłączony") + "\n" + "Temat: " + topic)
-	playSound()
-})
-*/
-
-chrome.notifications.onClicked.addListener(function(notificationId) {
+chrome.notifications.onClicked.addListener(function() {
 	chrome.tabs.create({url: 'https://jadisco.pl'});
 });
 
 chrome.runtime.onStartup.addListener(function() {
 	console.log("runtime.onStartup")
 	startConnect()
-});
-
-chrome.tabs.onActivated.addListener(function() {
-/*	showNotification("3")
-
-	console.log("tabs.onActivated")
-	reconnectInterval = setInterval(function () {
-		console.log("Attempt to connect")
-		makeWebsocket()
-	}, 20000)*/
 });
 
 startConnect()

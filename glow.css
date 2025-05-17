@@ -1,0 +1,34 @@
+.glow-green {
+    padding-left: 8px;
+    color: greenyellow;
+    text-align: center;
+    -webkit-animation: glow-green 1s ease-in-out infinite alternate;
+    -moz-animation: glow-green 1s ease-in-out infinite alternate;
+    animation: glow-green 1s ease-in-out infinite alternate;
+}
+
+@-webkit-keyframes glow-green {
+    from {
+        text-shadow: 0 0 10px darkseagreen, 0 0 20px darkseagreen, 0 0 30px greenyellow, 0 0 40px greenyellow, 0 0 50px greenyellow, 0 0 60px greenyellow, 0 0 70px greenyellow;
+    }
+    to {
+        text-shadow: 0 0 20px darkseagreen, 0 0 30px greenyellow, 0 0 40px greenyellow, 0 0 50px greenyellow, 0 0 60px greenyellow, 0 0 70px greenyellow, 0 0 80px greenyellow;
+    }
+}
+.glow-red {
+    padding-left: 8px;
+    color: red;
+    text-align: center;
+    -webkit-animation: glow-red 1s ease-in-out infinite alternate;
+    -moz-animation: glow-red 1s ease-in-out infinite alternate;
+    animation: glow-red 1s ease-in-out infinite alternate;
+}
+
+@-webkit-keyframes glow-red {
+    from {
+        text-shadow: 0 0 10px orangered, 0 0 20px orangered, 0 0 30px darkred, 0 0 40px darkred, 0 0 50px darkred, 0 0 60px darkred, 0 0 70px darkred;
+    }
+    to {
+        text-shadow: 0 0 20px orangered, 0 0 30px darkred, 0 0 40px darkred, 0 0 50px darkred, 0 0 60px darkred, 0 0 70px darkred, 0 0 80px darkred;
+    }
+}
