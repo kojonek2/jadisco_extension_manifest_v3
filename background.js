@@ -123,15 +123,10 @@ function showNotification(mainMessage) {
 		type: 'basic',
 		iconUrl: '/icons/128.png',
 		title: 'Jadisco.pl',
-		requireInteraction: true,
+		requireInteraction: false,
 		priority: 2,
 		silent: true,
 		message: mainMessage
-	},
-	function (callback_id) {
-		setTimeout(function() {
-			chrome.notifications.clear(callback_id)
-		}, 15000);
 	});
 }
 
@@ -163,21 +158,6 @@ function playSound() {
 	);
 }
 
-/*
-chrome.action.onClicked.addListener(function () {
-/*	if (websocket == null || websocket.readyState == WebSocket.CLOSED) {
-		makeWebsocket()
-		doReconnect = true;
-	} else if (websocket != null && websocket.readyState == WebSocket.OPEN) {
-		doReconnect = false;
-		closeWebsocket()
-	}/
-	
-	showNotification("Strumień " + (streamStatus ? "włączony" : "wyłączony") + "\n" + "Temat: " + topic)
-	playSound()
-})
-*/
-
 chrome.notifications.onClicked.addListener(function(notificationId) {
 	chrome.tabs.create({url: 'https://jadisco.pl'});
 });
@@ -187,14 +167,4 @@ chrome.runtime.onStartup.addListener(function() {
 	startConnect()
 });
 
-chrome.tabs.onActivated.addListener(function() {
-/*	showNotification("3")
-
-	console.log("tabs.onActivated")
-	reconnectInterval = setInterval(function () {
-		console.log("Attempt to connect")
-		makeWebsocket()
-	}, 20000)*/
-});
-
-startConnect()
+startConnect();
