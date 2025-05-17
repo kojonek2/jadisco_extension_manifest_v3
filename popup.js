@@ -1,14 +1,24 @@
+const mutedEl = document.getElementById('muted');
+const volumeEl = document.getElementById('volume');
+const saveEl = document.getElementById('save');
+
+let websocket;
+let websocketHeartbeatInterval;
+let connectInterval;
+let streamStatus = false;
+const TODAY = new Date();
+const TODAY_ONLY = new Date(TODAY.getFullYear(), TODAY.getMonth(), TODAY.getDate());
+
 const saveOptions = () => {
-    const MUTED = document.getElementById('muted').checked;
-    const VOLUME = document.getElementById('volume').value;
+    const MUTED = mutedEl.checked;
+    const VOLUME = volumeEl.value;
 
     chrome.storage.sync.set(
         { muted: MUTED, volume: VOLUME },
         () => {
-            const statusEl = document.getElementById('save');
-            statusEl.textContent = '🔥 Options saved 🔥';
+            saveEl.textContent = '🔥 Options saved 🔥';
             setTimeout(() => {
-                statusEl.textContent = '💾 Save';
+                saveEl.textContent = '💾 Save';
             }, 1000);
         },
     );
@@ -18,8 +28,8 @@ const restoreOptions = () => {
     chrome.storage.sync.get(
         { muted: false, volume: 0.5 },
         (items) => {
-            document.getElementById('muted').checked = items.muted;
-            document.getElementById('volume').value = items.volume;
+            mutedEl.checked = items.muted;
+            volumeEl.value = items.volume;
         },
     );
 };
@@ -27,14 +37,6 @@ const restoreOptions = () => {
 function openJadisco() {
     chrome.tabs.create({ url: 'https://jadisco.pl' });
 }
-
-let websocket;
-let websocketHeartbeatInterval;
-let connectInterval;
-let streamStatus = false;
-const TODAY = new Date();
-const TODAY_ONLY = new Date(TODAY.getFullYear(), TODAY.getMonth(), TODAY.getDate());
-
 
 function makeWebsocket() {
     try {
@@ -49,27 +51,37 @@ function closeWebsocket() {
     websocket.close();
 }
 
+function assingDateToElement(dateOnly, element, fullDate) {
+    if (dateOnly.getTime() === TODAY_ONLY.getTime()) {
+        element.innerText = fullDate.toLocaleTimeString(['pl-PL'], {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false,
+        });
+    } else {
+        element.innerText = fullDate.toLocaleDateString(['pl-PL'], {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false,
+        });
+    }
+}
+
 function makeListeners() {
     websocket.onopen = function() {
         console.log('Connected!');
-
         websocket.send('{"type":"follow","site_id":16}');
-
         startHeartbeat();
-
         clearInterval(connectInterval);
     };
 
     websocket.onmessage = function(event) {
         let messageJson = JSON.parse(event.data);
-        console.log('messageJson', messageJson);
         let type = messageJson.type;
-
         if (type === 'ping') {
             console.log('ping');
         } else if (type === 'status') {
             let statusReceived = messageJson.data.services.some(service => service.status.status === 1);
-
             let statusEl = document.getElementById('status');
             let statusTimeEl = document.getElementById('statusTime');
 
@@ -79,44 +91,22 @@ function makeListeners() {
                     statusEl.classList = ['glow-green'];
                     streamStatus = true;
                     playSound();
+
                     const youngest = messageJson.data.services.reduce((latest, current) => {
                         return new Date(current.created_at) > new Date(latest.created_at) ? current : latest;
                     });
                     const statusDate = new Date(youngest.created_at);
                     const statusDateOnly = new Date(statusDate.getFullYear(), statusDate.getMonth(), statusDate.getDate());
-                    if (statusDateOnly.getTime() === TODAY_ONLY.getTime()) {
-                        statusTimeEl.innerText = statusDate.toLocaleTimeString(['pl-PL'], {
-                            hour: '2-digit',
-                            minute: '2-digit',
-                            hour12: false,
-                        });
-                    } else {
-                        statusTimeEl.innerText = statusDate.toLocaleDateString(['pl-PL'], {
-                            hour: '2-digit',
-                            minute: '2-digit',
-                            hour12: false,
-                        });
-                    }
+                    assingDateToElement(statusDateOnly, statusTimeEl, statusDate);
                 }
             } else {
                 statusEl.innerHTML = 'Offline';
                 statusEl.classList = ['glow-red'];
                 streamStatus = false;
+
                 const statusDate = new Date(messageJson.data.host.created_at);
                 const statusDateOnly = new Date(statusDate.getFullYear(), statusDate.getMonth(), statusDate.getDate());
-                if (statusDateOnly.getTime() === TODAY_ONLY.getTime()) {
-                    statusTimeEl.innerText = statusDate.toLocaleTimeString(['pl-PL'], {
-                        hour: '2-digit',
-                        minute: '2-digit',
-                        hour12: false,
-                    });
-                } else {
-                    statusTimeEl.innerText = statusDate.toLocaleDateString(['pl-PL'], {
-                        hour: '2-digit',
-                        minute: '2-digit',
-                        hour12: false,
-                    });
-                }
+                assingDateToElement(statusDateOnly, statusTimeEl, statusDate);
             }
 
 
@@ -125,22 +115,8 @@ function makeListeners() {
                 topicTimeEl.innerText = '';
 
                 const inputDate = new Date(messageJson.data.topic.updated_at);
-
                 const inputDateOnly = new Date(inputDate.getFullYear(), inputDate.getMonth(), inputDate.getDate());
-
-                if (inputDateOnly.getTime() === TODAY_ONLY.getTime()) {
-                    topicTimeEl.innerText = inputDate.toLocaleTimeString(['pl-PL'], {
-                        hour: '2-digit',
-                        minute: '2-digit',
-                        hour12: false,
-                    });
-                } else {
-                    topicTimeEl.innerText = inputDate.toLocaleDateString(['pl-PL'], {
-                        hour: '2-digit',
-                        minute: '2-digit',
-                        hour12: false,
-                    });
-                }
+                assingDateToElement(inputDateOnly, topicTimeEl, inputDate);
 
                 let topicEl = document.getElementById('topic');
                 topicEl.innerText = '';
@@ -155,9 +131,7 @@ function makeListeners() {
     websocket.onclose = function() {
         console.log('Disconnected!');
         chrome.action.setIcon({ path: { '16': '/icons/16-disconnected.png', '32': '/icons/32-disconnected.png' } });
-
         stopHeartbeat();
-
         startConnect();
     };
 }
@@ -213,5 +187,5 @@ window.onblur = function() {
 };
 
 document.addEventListener('DOMContentLoaded', restoreOptions);
-document.getElementById('save').addEventListener('click', saveOptions);
+saveEl.addEventListener('click', saveOptions);
 document.getElementById('logo').addEventListener('click', openJadisco);
