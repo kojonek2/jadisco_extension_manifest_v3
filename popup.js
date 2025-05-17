@@ -81,13 +81,19 @@ function assignDataFromMsg(lastMsg) {
     }
 }
 
-const restoreOptions = () => {
+const setUp = () => {
     chrome.storage.sync.get(
         { muted: false, volume: 0.5, lastMsg: {} },
         (items) => {
             mutedEl.checked = items.muted;
             volumeEl.value = items.volume;
             const { lastMsg } = items;
+            assignDataFromMsg(lastMsg);
+        },
+    );
+    chrome.storage.session.get(
+        { lastMsg: {} },
+        ({ lastMsg }) => {
             assignDataFromMsg(lastMsg);
         },
     );
@@ -114,7 +120,7 @@ window.onblur = function() {
     settingsButtonEl.removeEventListener('click', toggleOptions);
 };
 
-document.addEventListener('DOMContentLoaded', restoreOptions);
+document.addEventListener('DOMContentLoaded', setUp);
 logoEl.addEventListener('click', openJadisco);
 settingsButtonEl.addEventListener('click', toggleOptions);
 saveEl.addEventListener('click', saveOptions);

@@ -41,7 +41,7 @@ function makeListeners() {
         if (type === 'ping') {
             console.log('🏓');
         } else if (type === 'status') {
-            chrome.storage.sync.set({ lastMsg: messageJson });
+            chrome.storage.session.set({ lastMsg: messageJson });
             chrome.runtime.sendMessage({ type: 'statusUpdate', payload: messageJson }).catch((error) => {
                 console.warn('No receiver for statusUpdate message', error);
             });
