@@ -53,7 +53,7 @@ function assingDateToElement(dateOnly, element, fullDate) {
 }
 
 function assignDataFromMsg(lastMsg) {
-    if (!('data' in lastMsg))
+    if (!lastMsg.data) {
     {
         statusEl.innerHTML = 'Error';
         statusEl.className = 'glow glow-red';
