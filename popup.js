@@ -2,6 +2,7 @@ import { playSound } from './playSound.js';
 
 const mutedEl = document.getElementById('muted');
 const volumeEl = document.getElementById('volume');
+const removeNotificationEl = document.getElementById('removeNotification');
 const saveEl = document.getElementById('save');
 const statusEl = document.getElementById('status');
 const statusTimeEl = document.getElementById('statusTime');
@@ -22,9 +23,10 @@ chrome.runtime.onMessage.addListener((message) => {
 const saveOptions = () => {
     const MUTED = mutedEl.checked;
     const VOLUME = volumeEl.value;
+    const REMOVE_NOTIFICATION = removeNotificationEl.checked;
 
     chrome.storage.sync.set(
-        { muted: MUTED, volume: VOLUME },
+        { muted: MUTED, volume: VOLUME, removeNotification: REMOVE_NOTIFICATION },
         () => {
             saveEl.textContent = '🔥 Options saved 🔥';
             setTimeout(() => {
@@ -83,12 +85,11 @@ function assignDataFromMsg(lastMsg) {
 
 const setUp = () => {
     chrome.storage.sync.get(
-        { muted: false, volume: 0.5, lastMsg: {} },
+        { muted: false, volume: 0.5, removeNotification: true},
         (items) => {
             mutedEl.checked = items.muted;
             volumeEl.value = items.volume;
-            const { lastMsg } = items;
-            assignDataFromMsg(lastMsg);
+            removeNotificationEl.checked = items.removeNotification;
         },
     );
     chrome.storage.session.get(
