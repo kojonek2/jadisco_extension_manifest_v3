@@ -53,6 +53,13 @@ function assingDateToElement(dateOnly, element, fullDate) {
 }
 
 function assignDataFromMsg(lastMsg) {
+    if (!('data' in lastMsg))
+    {
+        statusEl.innerHTML = 'Error';
+        statusEl.className = 'glow glow-red';
+        return;
+    }
+
     const strimActive = lastMsg.data.services.some(service => service.status.status === 1);
     if (strimActive) {
         statusEl.innerHTML = 'On air';
